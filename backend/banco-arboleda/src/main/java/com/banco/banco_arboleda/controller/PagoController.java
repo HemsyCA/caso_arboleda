@@ -1,5 +1,4 @@
 package com.banco.banco_arboleda.controller;
-
 import com.banco.banco_arboleda.model.Pago;
 import com.banco.banco_arboleda.service.PagoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")

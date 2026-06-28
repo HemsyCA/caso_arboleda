@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mensaje - Banco Arboleda</title>
+<style>
+body{font-family:Arial;background:#f0f4f0;margin:0;display:flex;height:100vh;align-items:center;justify-content:center}
+.box{max-width:400px;width:90%;background:#fff;padding:40px;border-radius:10px;box-shadow:0 2px 8px #ccc;text-align:center}
+.icono{font-size:60px}
+h2{color:#2e7d32;margin:10px 0}
+button{margin-top:25px;width:100%;padding:14px;background:#2e7d32;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:16px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="icono">✅</div>
+  <h2 id="texto">Procesando...</h2>
+  <button onclick="location.href='index.html'">Volver al inicio</button>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  const mensaje = params.get('msg') || 'Operación realizada con éxito';
+  document.getElementById('texto').innerText = mensaje;
+</script>
+</body>
+</html>

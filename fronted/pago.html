@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Pago de Servicio</title>
+<style>
+body{font-family:Arial;background:#f0f4f0;margin:0}
+.header{background:#2e7d32;color:#fff;padding:20px 30px}
+.box{max-width:420px;margin:40px auto;background:#fff;padding:30px;border-radius:10px;box-shadow:0 2px 8px #ccc}
+label{display:block;margin:14px 0 5px;font-weight:bold}
+input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:5px;box-sizing:border-box}
+button{margin-top:20px;width:100%;padding:14px;background:#2e7d32;color:#fff;border:none;border-radius:8px;cursor:pointer}
+#deuda,#msg{margin-top:15px;padding:12px;border-radius:8px;display:none}
+.ok{background:#e8f5e9;color:#2e7d32}
+</style>
+</head>
+<body>
+<div class="header"><a href="index.html" style="color:#fff">← Volver</a><h2>Pago de Servicio</h2></div>
+<div class="box">
+  <label>Cuenta de cargo</label>
+  <select id="cuenta">
+    <option value="">-- Seleccione --</option>
+    <option value="Cuenta 1">Cuenta 1 - S/.1200</option>
+    <option value="Cuenta 2">Cuenta 2 - S/.100</option>
+  </select>
+
+  <label>Empresa</label>
+  <select id="empresa" onchange="verDeuda()">
+    <option value="">-- Seleccione --</option>
+    <option value="Luz Star">Empresa Luz Star</option>
+    <option value="Agua Sin Filtro">Empresa Agua Sin Filtro</option>
+  </select>
+
+  <label>Código de recibo (8 dígitos)</label>
+  <input type="text" id="codigo" maxlength="8" placeholder="Ej: 12345678">
+
+  <div id="deuda" class="ok"></div>
+
+  <button onclick="pagar()">Pagar</button>
+  <div id="msg"></div>
+</div>
+
+<script>
+async function verDeuda(){
+  const empresa = document.getElementById('empresa').value;
+  const d = document.getElementById('deuda');
+  if(!empresa){ d.style.display='none'; return; }
+  const r = await fetch('http://localhost:8080/api/deuda/'+encodeURIComponent(empresa));
+  const data = await r.json();
+  d.innerText = 'Deuda: S/. ' + data.deuda;
+  d.style.display='block';
+}
+
+async function pagar(){
+  const cuenta = document.getElementById('cuenta').value;
+  const empresa = document.getElementById('empresa').value;
+  const codigoRecibo = document.getElementById('codigo').value;
+  const msg = document.getElementById('msg');
+
+  if(!cuenta||!empresa||!codigoRecibo){
+    msg.innerText='⚠️ Complete todos los campos'; msg.style.display='block'; return;
+  }
+  const r = await fetch('http://localhost:8080/api/pago',{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({cuenta, empresa, codigoRecibo})
+  });
+  const data = await r.json();
+
+  if (r.ok) {
+    location.href = 'mensaje.html?msg=' + encodeURIComponent(data.mensaje);
+  } else {
+    msg.innerText = data.mensaje;
+    msg.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
